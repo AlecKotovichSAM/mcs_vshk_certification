@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "helmchart.fullname" . }}
+  name: {{ include "helmchart.fullname" . }}-deployment
   labels:
     {{- include "helmchart.labels" . | nindent 4 }}  
     app: {{ .Values.label.app }}  
