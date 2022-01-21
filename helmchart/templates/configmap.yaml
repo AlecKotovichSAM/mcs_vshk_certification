@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name:  {{ .Release.Name }}-{{ .Chart.Name }}-configmap
+data:
+  webservice_port: "{{ .Values.service.targetPort }}"
+  database_host:   {{ .Values.databaseHost }}
+  database_port:   "{{ .Values.databasePort }}"
+  database_user:   {{ .Values.databaseUser }}
+  database_name:   {{ .Values.databaseName }}
