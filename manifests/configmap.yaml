@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-configmap
+data:
+  webservice_port: "8080"
+  database_host:   109.120.X.Y
+  database_port:   "5432"
+  database_user:   user
+  database_name:   users

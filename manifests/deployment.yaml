@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - image: 89.208.196.40:5000/io.slurm.gitlab.s002922.users_rest_api:1.0.0
+        name: python-users-rest-api
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 500m
+            memory: 500Mi
+        env:
+          - name: PORT
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: webservice_port
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: database_host
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: database_port
+          - name: DB_USER
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: database_user
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret-db-pwd
+                key: database_password
+          - name: DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: my-configmap
+                key: database_name
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /users
+            port: 8080
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /users
+            port: 8080
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+          initialDelaySeconds: 10
+        startupProbe:
+          httpGet:
+            path: /users
+            port: 8080
+          failureThreshold: 30
+          periodSeconds: 10                
+      imagePullSecrets:
+        - name: regcred
+              
