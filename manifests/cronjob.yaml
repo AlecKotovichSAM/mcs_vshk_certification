@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: my-cronjob
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 30
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 10    
+  jobTemplate:
+    spec:    
+      backoffLimit: 2
+      activeDeadlineSeconds: 330      
+      template:
+        spec:
+          containers:
+          - name: my-cronjob
+            image: quay.io/prometheus/busybox
+            resources:
+              requests:
+                memory: "20Mi"
+                cpu: "20m"
+              limits:
+                memory: "200Mi"
+                cpu: "200m"                      
+            imagePullPolicy: IfNotPresent
+            args:
+            - /bin/sh
+            - -c
+            - date; echo Hello world!
+          restartPolicy: Never
