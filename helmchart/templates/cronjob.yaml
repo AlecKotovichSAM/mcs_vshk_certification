@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "helmchart.fullname" . }}-cronjob
+spec:
+  schedule: "{{ .Values.cronjob.spec.schedule }}"
+  concurrencyPolicy:  {{ .Values.cronjob.spec.concurrencyPolicy }}
+  startingDeadlineSeconds:  {{ .Values.cronjob.spec.startingDeadlineSeconds }}
+  successfulJobsHistoryLimit:  {{ .Values.cronjob.spec.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit:  {{ .Values.cronjob.spec.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:    
+      backoffLimit: {{ .Values.cronjob.jobTemplate.spec.backoffLimit }}
+      activeDeadlineSeconds:  {{ .Values.cronjob.jobTemplate.spec.activeDeadlineSeconds }}
+      template:
+        spec:
+          containers:
+          - name: {{ include "helmchart.fullname" . }}-cronjob
+            image: {{ .Values.cronjob.containers.image }}
+            resources:
+              {{- toYaml .Values.cronjob.resources | nindent 14 }}
+            imagePullPolicy: {{ .Values.cronjob.containers.imagePullPolicy }}
+            args:
+            - /bin/sh
+            - -c
+            - date; echo {{ .Values.cronjob.message }}
+          restartPolicy: {{ .Values.cronjob.containers.restartPolicy }}
