@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+  labels:
+    app: mysql
+data:
+  primary.cnf: |
+    [mysqld]
+    log-bin
+    bind-address = 0.0.0.0    
+  replica.cnf: |
+    [mysqld]
+    super-read-only    
+    bind-address = 0.0.0.0
